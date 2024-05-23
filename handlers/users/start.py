@@ -11,8 +11,10 @@ cursor = con.cursor()
 
 
 @dp.message(CommandStart())
-async def start_bot(message: types.Message):
+async def start(message: types.Message):
     user_id = message.from_user.id
+    username = message.from_user.username
+    full_name = message.from_user.full_name
 
     cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
     user = cursor.fetchone()
@@ -33,12 +35,12 @@ async def start_bot(message: types.Message):
         cursor.execute("SELECT COUNT(*) FROM users")
         user_count = cursor.fetchone()[0]
 
-        await message.reply(f"Siz {user_count}-foydalanuvchisiz.")
+        # await message.reply(f"Siz {user_count}-foydalanuvchisiz.")
 
         # Admin uchun xabar
-        await users_count(f"Yangi foydalanuvchi qo'shildi. Umumiy foydalanuvchilar soni: {user_count}")
+        await users_count(user_id, username, full_name, user_count)
     await message.answer(f'Assalamu Aleykum {message.from_user.full_name} botimizga xush kelibsiz\n'
-                         f'Kino kodini kiriting')
+                         f'Kino kodini kiriting!')
 
 
 @dp.message()
